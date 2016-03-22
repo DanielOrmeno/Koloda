@@ -26,7 +26,7 @@ class CustomCardViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        testButton.titleLabel!.text = self.label
+        testButton.setTitle(self.label, forState: UIControlState.Normal)
     }
     
     
