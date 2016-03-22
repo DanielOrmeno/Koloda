@@ -57,7 +57,23 @@ extension ViewController: KolodaViewDelegate {
     }
     
     func koloda(koloda: KolodaView, didSelectCardAtIndex index: UInt) {
-        UIApplication.sharedApplication().openURL(NSURL(string: "http://yalantis.com/")!)
+        print("tap Event Detected")
+    }
+    
+                                                                                            //- HERE I DISABLE THE TAP AND PAN GESTURES FOR THE BUTTON.
+    func koloda(koloda: KolodaView, didShowCardAtIndex index: UInt) {
+        let subviews = koloda.subviews
+        for subview in subviews {
+            if let recognizers = subview.gestureRecognizers {
+                for gesture in recognizers {
+                    if gesture is UIPanGestureRecognizer || gesture is UITapGestureRecognizer{
+                        //- Also tried setting this to false but nothing.
+                        gesture.cancelsTouchesInView = false
+                        gesture.delegate = self
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -69,12 +85,23 @@ extension ViewController: KolodaViewDataSource {
     }
     
     func koloda(koloda: KolodaView, viewForCardAtIndex index: UInt) -> UIView {
-        return UIImageView(image: UIImage(named: "Card_like_\(index + 1)"))
+        let vc = CustomCardViewController(lab: "Test Action")
+        return vc.view
     }
     
     func koloda(koloda: KolodaView, viewForCardOverlayAtIndex index: UInt) -> OverlayView? {
         return NSBundle.mainBundle().loadNibNamed("OverlayView",
             owner: self, options: nil)[0] as? OverlayView
     }
+}
+
+extension ViewController: UIGestureRecognizerDelegate {
+        func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
+            if touch.view is UIButton {
+                return false
+            } else {
+                return true
+            }
+        }
 }
 
